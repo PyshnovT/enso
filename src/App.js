@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 import Helmet from "react-helmet";
+import { SectionsContainer, Section } from "react-fullpage";
 
 import Page from "./Screens/Page";
 import CompanyPage from "./Screens/CompanyPage";
@@ -16,13 +17,14 @@ const Main = styled.main`
 const Container = styled.div`
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 
   overflow: scroll;
 
   text-align: center;
 
   @media only screen and (min-width: 62rem) {
+    flex-wrap: wrap;
     text-align: left;
   }
 `;
@@ -67,6 +69,16 @@ var blocks = [
 ];
 
 function App() {
+  let options = {
+    sectionClassName: "section",
+    anchors: ["sectionOne", "sectionTwo", "sectionThree"],
+    scrollBar: false,
+    navigation: true,
+    verticalAlign: false,
+    sectionPaddingTop: "50px",
+    sectionPaddingBottom: "50px",
+    arrowNavigation: true
+  };
   return (
     <Main>
       <Helmet>

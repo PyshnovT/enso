@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 const Container = styled.nav`
   position: fixed;
@@ -53,15 +54,15 @@ const Item = styled.li`
 
   display: flex;
   align-items: center;
-  padding-left: 1.25rem;
-  padding-right: 1.25rem;
+  margin-left: 1.25rem;
+  margin-right: 1.25rem;
 
   font-size: 1rem;
   color: #282828;
   line-height: 4rem;
 
   &:last-child {
-    padding-right: 0;
+    margin-right: 0;
   }
 
   @media only screen and (min-width: 62rem) {
@@ -106,7 +107,7 @@ const HelpText = styled.span`
 
 export default class Navigation extends React.Component {
   onHelpClick = () => {
-    console.log("click");
+    this.props.onHelpClick();
   };
 
   render() {
@@ -124,3 +125,7 @@ export default class Navigation extends React.Component {
     );
   }
 }
+
+Navigation.propTypes = {
+  onHelpClick: PropTypes.func.isRequired
+};

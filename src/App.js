@@ -7,7 +7,6 @@ import Navigation from "./Navigation";
 import MainPage from "./Screens/MainPage";
 import Modal from "./ui/modal";
 import Help from "./Screens/Help";
-import { throws } from "assert";
 
 const Main = styled.main`
   font-family: "Muller", sans-serif;

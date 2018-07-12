@@ -17,23 +17,13 @@ const Container = styled.div`
 
   text-align: center;
 
-  // transition: all 550ms ease-out;
-  // transform: translate3d(0px, ${props => props.offset}px, 0px);
+  transition: all 550ms ease-out;
+  transform: translate3d(0px, ${props => props.offset}px, 0px);
 
   @media only screen and (min-width: 62rem) {
     flex-wrap: wrap;
     text-align: left;
   }
-`;
-
-const Background = styled.div`
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  // right: 0;
-  // top: 0;
-  width: 100%;
-  height: 100%;
 `;
 
 const BlockWrapper = styled.div`
@@ -80,49 +70,51 @@ class MainPage extends React.Component {
     offsetY: 0,
     page: 0,
     timestamp: 0,
-    scrolling: false
+    scrolling: false,
+    lastDeltaY: 0
   };
 
   componentDidMount() {
     window.addEventListener("mousewheel", this.updateScroll);
+    window.addEventListener("DOMMouseWheel", this.updateScroll);
   }
 
   componentWillUnmount() {
     window.removeEventListener("mousewheel", this.updateScroll);
+    window.removeEventListener("DOMMouseWheel", this.updateScroll);
   }
 
   updateScroll = event => {
-    // console.log(event);
     let next = event.deltaY > 0;
     let page = this.state.page;
     let timestamp = this.state.timestamp;
     let eventTimestamp = event.timeStamp;
-    let scrolling = this.state.scrolling;
+    let lastDeltaY = this.lastDeltaY || 0;
+    let newDeltaY = event.deltaY;
 
-    if (scrolling) {
-      if (eventTimestamp - 550 < timestamp) {
+    if (eventTimestamp - 550 < timestamp) {
+      this.lastDeltaY = newDeltaY;
+      return;
+    } else {
+      //
+      if (Math.abs(newDeltaY) <= Math.abs(lastDeltaY)) {
+        this.lastDeltaY = newDeltaY;
         return;
       } else {
       }
     }
 
+    this.lastDeltaY = 0;
+
     var newPage = Math.min(3, page + (next ? 1 : -1));
     newPage = Math.max(0, newPage);
-    // console.log(event.currentTarget);
-    // if (this.state.offsetY > newOffset) {
-    //   console.log("вверх");
-    // } else if (this.state.offsetY < newOffset) {
-    //   console.log("вниз");
-    // }
 
-    // console.log("timestamp: ", timestamp, "eventTimestamp: ", eventTimestamp);
-
-    // this.setState({
-    //   offsetY: newPage * -window.innerHeight,
-    //   page: newPage,
-    //   timestamp: eventTimestamp,
-    //   scrolling: true
-    // });
+    this.setState({
+      offsetY: newPage * -window.innerHeight,
+      page: newPage,
+      timestamp: eventTimestamp
+      // scrolling: true
+    });
   };
 
   render() {

@@ -3,7 +3,8 @@
   font-style: normal;
   font-weight: 400;
   src: local("MullerRegular"), local("Muller"),
-    url("./fonts/Muller/MullerRegular.woff") format("woff"); /* Modern Browsers */
+    url("./fonts/Muller/MullerRegular.woff") format("woff"),
+    url("./fonts/Muller/MullerRegular.woff2") format("woff2"); /* Modern Browsers */
 }
 
 @font-face {
@@ -11,7 +12,8 @@
   font-style: normal;
   font-weight: 600;
   src: local("MullerBold"), local("Muller"),
-    url("./fonts/Muller/MullerBold.woff") format("woff"); /* Modern Browsers */
+    url("./fonts/Muller/MullerBold.woff") format("woff"),
+    /* Modern Browsers */ url("./fonts/Muller/MullerBold.woff2") format("woff2"); /* Modern Browsers */
 }
 
 @font-face {
@@ -19,11 +21,13 @@
   font-style: normal;
   font-weight: 500;
   src: local("MullerMedium"), local("Muller"),
-    url("./fonts/Muller/MullerMedium.woff") format("woff"); /* Modern Browsers */
+    url("./fonts/Muller/MullerMedium.woff") format("woff"),
+    url("./fonts/Muller/MullerMedium.woff2") format("woff2"); /* Modern Browsers */
 }
 
 body {
   margin: 0;
   padding: 0;
   font-family: "Muller", sans-serif;
+  overflow: hidden;
 }

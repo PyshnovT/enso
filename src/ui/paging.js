@@ -58,7 +58,7 @@ class Paging extends React.Component {
   render() {
     var dots = [];
     for (var i = 0; i < this.props.count; i++) {
-      dots.push(<Dot current={i === this.props.currentIndex} />);
+      dots.push(<Dot current={i === this.props.currentIndex} key={i} />);
     }
 
     return (

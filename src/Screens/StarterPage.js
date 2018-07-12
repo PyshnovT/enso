@@ -73,7 +73,7 @@ const Arrow = styled.span`
   }
 `;
 
-export default ({ title, about }) => {
+export default ({ title, about, onNextClick }) => {
   return (
     <div className="container">
       <div className="row">
@@ -81,7 +81,7 @@ export default ({ title, about }) => {
           <Title>{title}</Title>
           <About>{about}</About>
           <More>
-            <AdditionalsButton type="button">
+            <AdditionalsButton type="button" onClick={onNextClick}>
               Смотреть кейсы <Arrow />
             </AdditionalsButton>
           </More>

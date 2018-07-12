@@ -79,6 +79,8 @@ class MainPage extends React.Component {
 
   componentDidMount() {
     window.addEventListener("mousewheel", this.updateScroll);
+    window.addEventListener("touchstart", this.touchStarted);
+    window.addEventListener("touchmove", this.updateScrollOnTouch);
     window.addEventListener("DOMMouseWheel", this.updateScroll);
 
     this.updateWindowDimensions();
@@ -87,6 +89,8 @@ class MainPage extends React.Component {
 
   componentWillUnmount() {
     window.removeEventListener("mousewheel", this.updateScroll);
+    window.removeEventListener("touchstart", this.touchStarted);
+    window.removeEventListener("touchmove", this.updateScrollOnTouch);
     window.removeEventListener("DOMMouseWheel", this.updateScroll);
 
     window.removeEventListener("resize", this.updateWindowDimensions);
@@ -96,12 +100,13 @@ class MainPage extends React.Component {
     let width = window.innerWidth;
     let height = window.innerHeight;
 
-    this.container.scrollLeft = 0;
     this.mobile = width < breakpoint;
     this.lastDelta = 0;
 
     if (width < breakpoint && this.width >= breakpoint) {
       // set mobile
+
+      this.container.scrollLeft = 0;
 
       this.setState({
         offsetY: 0,
@@ -110,12 +115,22 @@ class MainPage extends React.Component {
       });
     } else if (width >= breakpoint && this.width < breakpoint) {
       // set desktop
+      this.container.scrollLeft = 0;
 
       this.setState({
         offsetY: 0,
         offsetX: 0,
         page: 0
       });
+    } else {
+      // фиксим бажик
+      this.container.scrollLeft = 0;
+
+      if (this.state.page !== 0) {
+        this.setState({
+          page: 0
+        });
+      }
     }
 
     this.width = width;
@@ -124,6 +139,31 @@ class MainPage extends React.Component {
 
   dimensionLength = () => {
     return this.mobile ? this.width : this.height;
+  };
+
+  touchStarted = event => {
+    let touch = event.touches[0];
+    this.startPageX = touch.pageX;
+  };
+
+  updateScrollOnTouch = event => {
+    let eventTimestamp = event.timeStamp;
+    let touch = event.touches[0];
+    let pageX = touch.pageX;
+    let page = this.state.page;
+
+    let next = pageX < this.startPageX;
+
+    if (eventTimestamp - 550 < this.state.timestamp) {
+      return;
+    }
+
+    var newPage = Math.min(3, page + (next ? 1 : -1));
+    newPage = Math.max(0, newPage);
+
+    this.scrollToPage(newPage, eventTimestamp);
+
+    this.startPageX = 0;
   };
 
   updateScroll = event => {
@@ -147,18 +187,22 @@ class MainPage extends React.Component {
       }
     }
 
-    this.lastDelta = 0;
-
     var newPage = Math.min(3, page + (next ? 1 : -1));
     newPage = Math.max(0, newPage);
 
-    let offset = newPage * -this.dimensionLength();
+    this.scrollToPage(newPage, eventTimestamp);
+  };
+
+  scrollToPage = (page, eventTimestamp) => {
+    let offset = page * -this.dimensionLength();
+
+    this.lastDelta = 0;
 
     this.setState({
       offsetY: this.mobile ? 0 : offset,
       offsetX: this.mobile ? offset : 0,
-      page: newPage,
-      timestamp: eventTimestamp
+      page: page,
+      timestamp: eventTimestamp || 0
     });
 
     // this.container.scrollLeft = this.mobile ? -offset : 0;
@@ -187,6 +231,7 @@ class MainPage extends React.Component {
               <StarterPage
                 title={"Увеличиваем продажи в недвижимости"}
                 about="За счет упаковки и рекламы, которые приносят деньги"
+                onNextClick={() => this.scrollToPage(1)}
               />
             </Page>
           </Block>

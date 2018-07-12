@@ -6,6 +6,7 @@ import styled from "styled-components";
 import Page from "./Page";
 import CompanyPage from "./CompanyPage";
 import StarterPage from "./StarterPage";
+import Paging from "../ui/paging";
 
 const Container = styled.div`
   position: relative;
@@ -13,12 +14,12 @@ const Container = styled.div`
   flex-direction: row;
   flex-wrap: nowrap;
 
-  overflow: scroll;
+  overflow: hidden;
 
   text-align: center;
 
   transition: all 550ms ease-out;
-  transform: translate3d(0px, ${props => props.offset}px, 0px);
+  transform: translate3d(0px, ${props => props.offsetY}px, 0px);
 
   @media only screen and (min-width: 62rem) {
     flex-wrap: wrap;
@@ -65,84 +66,146 @@ var blocks = [
   }
 ];
 
+let breakpoint = 992;
+
 class MainPage extends React.Component {
   state = {
     offsetY: 0,
+    offsetX: 0,
     page: 0,
     timestamp: 0,
-    scrolling: false,
-    lastDeltaY: 0
+    lastDelta: 0
   };
 
   componentDidMount() {
     window.addEventListener("mousewheel", this.updateScroll);
     window.addEventListener("DOMMouseWheel", this.updateScroll);
+
+    this.updateWindowDimensions();
+    window.addEventListener("resize", this.updateWindowDimensions);
   }
 
   componentWillUnmount() {
     window.removeEventListener("mousewheel", this.updateScroll);
     window.removeEventListener("DOMMouseWheel", this.updateScroll);
+
+    window.removeEventListener("resize", this.updateWindowDimensions);
   }
 
+  updateWindowDimensions = () => {
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+
+    this.container.scrollLeft = 0;
+    this.mobile = width < breakpoint;
+    this.lastDelta = 0;
+
+    if (width < breakpoint && this.width >= breakpoint) {
+      // set mobile
+
+      this.setState({
+        offsetY: 0,
+        offsetX: 0,
+        page: 0
+      });
+    } else if (width >= breakpoint && this.width < breakpoint) {
+      // set desktop
+
+      this.setState({
+        offsetY: 0,
+        offsetX: 0,
+        page: 0
+      });
+    }
+
+    this.width = width;
+    this.height = height;
+  };
+
+  dimensionLength = () => {
+    return this.mobile ? this.width : this.height;
+  };
+
   updateScroll = event => {
-    let next = event.deltaY > 0;
+    let delta = this.mobile ? event.deltaX : event.deltaY;
+    let next = delta > 0;
     let page = this.state.page;
     let timestamp = this.state.timestamp;
     let eventTimestamp = event.timeStamp;
-    let lastDeltaY = this.lastDeltaY || 0;
-    let newDeltaY = event.deltaY;
+    let lastDelta = this.lastDelta || 0;
+    let newDelta = delta;
 
     if (eventTimestamp - 550 < timestamp) {
-      this.lastDeltaY = newDeltaY;
+      this.lastDelta = newDelta;
       return;
     } else {
       //
-      if (Math.abs(newDeltaY) <= Math.abs(lastDeltaY)) {
-        this.lastDeltaY = newDeltaY;
+      if (Math.abs(newDelta) <= Math.abs(lastDelta)) {
+        this.lastDelta = newDelta;
         return;
       } else {
       }
     }
 
-    this.lastDeltaY = 0;
+    this.lastDelta = 0;
 
     var newPage = Math.min(3, page + (next ? 1 : -1));
     newPage = Math.max(0, newPage);
 
+    let offset = newPage * -this.dimensionLength();
+
     this.setState({
-      offsetY: newPage * -window.innerHeight,
+      offsetY: this.mobile ? 0 : offset,
+      offsetX: this.mobile ? offset : 0,
       page: newPage,
       timestamp: eventTimestamp
-      // scrolling: true
     });
+
+    // this.container.scrollLeft = this.mobile ? -offset : 0;
+    this.container.scroll({
+      left: this.mobile ? -offset : 0,
+      top: 0,
+      behavior: "smooth"
+    });
+  };
+
+  onContainerScroll = event => {
+    event.preventDefault();
   };
 
   render() {
     return (
-      <Container offset={this.state.offsetY}>
-        {/* <Background /> */}
-        <Block name="whoweare">
-          <Page>
-            <StarterPage
-              title={"Увеличиваем продажи в недвижимости"}
-              about="За счет упаковки и рекламы, которые приносят деньги"
-            />
-          </Page>
-        </Block>
-        {blocks.map((block, index) => (
-          <Block name={block.id} key={block.id}>
+      <div>
+        <Container
+          offsetX={this.state.offsetX}
+          offsetY={this.state.offsetY}
+          innerRef={node => (this.container = node)}
+          onScroll={this.onContainerScroll}
+        >
+          <Block name="whoweare">
             <Page>
-              <CompanyPage
-                type={block.type}
-                name={block.name}
-                aboutSign={block.aboutSign}
-                about={block.about}
-                website={block.website}
+              <StarterPage
+                title={"Увеличиваем продажи в недвижимости"}
+                about="За счет упаковки и рекламы, которые приносят деньги"
               />
             </Page>
           </Block>
-        ))}
-      </Container>
+          {blocks.map((block, index) => (
+            <Block name={block.id} key={block.id}>
+              <Page>
+                <CompanyPage
+                  type={block.type}
+                  name={block.name}
+                  aboutSign={block.aboutSign}
+                  about={block.about}
+                  website={block.website}
+                />
+              </Page>
+            </Block>
+          ))}
+        </Container>
+        <Paging currentIndex={this.state.page} count={blocks.length + 1} />
+      </div>
     );
   }
 }

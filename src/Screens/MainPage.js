@@ -26,6 +26,16 @@ const Container = styled.div`
   }
 `;
 
+const Background = styled.div`
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  // right: 0;
+  // top: 0;
+  width: 100%;
+  height: 100%;
+`;
+
 const BlockWrapper = styled.div`
   max-width: 100%;
   flex-basis: 100%;
@@ -118,6 +128,7 @@ class MainPage extends React.Component {
   render() {
     return (
       <Container offset={this.state.offsetY}>
+        {/* <Background /> */}
         <Block name="whoweare">
           <Page>
             <StarterPage

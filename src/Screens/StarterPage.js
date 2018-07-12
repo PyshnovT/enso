@@ -63,7 +63,13 @@ const Arrow = styled.span`
   margin-left: 0.25rem;
 
   :after {
-    content: "↓";
+    content: "→";
+  }
+
+  @media only screen and (min-width: 62rem) {
+    :after {
+      content: "↓";
+    }
   }
 `;
 

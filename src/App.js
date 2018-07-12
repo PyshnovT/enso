@@ -11,7 +11,10 @@ import { throws } from "assert";
 
 const Main = styled.main`
   font-family: "Muller", sans-serif;
-  background-color: #f7f5f5;
+
+  background: #f7f5f5 url('${require("./assets/background.png")}') 0% 100% no-repeat;
+  background-size: 100% auto; 
+  background-attachment: fixed;
 `;
 
 class App extends React.Component {

@@ -88,7 +88,7 @@ const LinkWrapper = styled.span`
   }
 `;
 
-export default ({ type, name, about, aboutSign, website }) => {
+export default ({ type, name, about, aboutSign, website, onFormClick }) => {
   return (
     <div className="container">
       <div className="row">
@@ -99,7 +99,9 @@ export default ({ type, name, about, aboutSign, website }) => {
             <AboutSign>{aboutSign}</AboutSign> {about}
           </About>
           <More>
-            <AdditionalsButton>Получить подробности</AdditionalsButton>
+            <AdditionalsButton type="button" onClick={onFormClick}>
+              Получить подробности
+            </AdditionalsButton>
             {website ? (
               <LinkWrapper>
                 Сайт —{" "}

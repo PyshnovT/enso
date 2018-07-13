@@ -1,9 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 
-import Page from "../Page";
-import Question from "./Question";
-import ContactForm from "../ContactForm";
+import Page from "./Page";
+import ContactForm from "./ContactForm";
 
 const Container = styled.div`
   position: relative;
@@ -15,12 +14,38 @@ const Container = styled.div`
 
   text-align: center;
 
+
+  background-color: white;
+  z-index: 1100;
   // transition: all 550ms ease-out;
   // transform: translate3d(0px, ${props => props.offset}px, 0px);
 
   @media only screen and (min-width: 62rem) {
     flex-wrap: wrap;
     text-align: left;
+  }
+
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: 1rem;
+  right:1rem;
+  margin: 0;
+  padding: 0;
+
+  width: 1.875rem;
+  height: 1.875rem;
+
+
+  background: transparent url('${require("../assets/close.svg")}') 50% 50% no-repeat;
+  border: none;
+  outline: none;
+  cursor: pointer;
+
+  @media only screen and (min-width: 62rem) {
+    top: 4rem;
+    right: 6rem;
   }
 
 `;
@@ -38,25 +63,15 @@ const Block = props => {
   );
 };
 
-export default class Help extends React.Component {
-  state = {
-    sent: false
-  };
-
-  onAnswer = () => {
-    this.setState({ sent: true });
-  };
-
+export default class Contact extends React.Component {
+  onSend = () => {};
   render() {
     return (
       <Container>
-        <Block name="questions">
+        <Block name="form">
           <Page>
-            {this.state.sent ? (
-              <ContactForm />
-            ) : (
-              <Question onAnswer={this.onAnswer} />
-            )}
+            <CloseButton onClick={this.props.onClose} />
+            <ContactForm />
           </Page>
         </Block>
       </Container>

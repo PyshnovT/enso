@@ -8,7 +8,7 @@ const Container = styled.nav`
   left: 0;
   right: 0;
 
-  display: flex;
+  display: ${props => (props.hidden ? "none" : "flex")};
   justify-content: space-between;
 
   padding-left: 1.25rem;
@@ -36,6 +36,7 @@ const Logo = styled.div`
     width: 70px;
 
     background: transparent url('${require("./assets/logo_big.svg")}') 50% 50% no-repeat;
+    background-size: 100% auto;
   }
 `;
 
@@ -112,7 +113,7 @@ export default class Navigation extends React.Component {
 
   render() {
     return (
-      <Container>
+      <Container hidden={this.props.hidden}>
         <Logo />
         <List>
           <Item>8 (495) 364-43-21</Item>

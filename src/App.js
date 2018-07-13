@@ -7,6 +7,7 @@ import Navigation from "./Navigation";
 import MainPage from "./Screens/MainPage";
 import Modal from "./ui/modal";
 import Help from "./Screens/Help";
+import Contact from "./Screens/Contact";
 
 const Main = styled.main`
   font-family: "Muller", sans-serif;
@@ -18,11 +19,16 @@ const Main = styled.main`
 
 class App extends React.Component {
   state = {
-    showModal: false
+    showHelp: false,
+    showForm: false
   };
 
   onHelpClick = () => {
-    this.setState(prevState => ({ showModal: !prevState.showModal }));
+    this.setState(prevState => ({ showHelp: !prevState.showHelp }));
+  };
+
+  onContactClick = () => {
+    this.setState(prevState => ({ showForm: !prevState.showForm }));
   };
 
   render() {
@@ -34,13 +40,21 @@ class App extends React.Component {
             <style>{"body {overflow: hidden}"}</style>
           ) : null}
         </Helmet>
-        <Navigation onHelpClick={this.onHelpClick} />
-        {this.state.showModal ? (
+        <Navigation
+          onHelpClick={this.onHelpClick}
+          hidden={this.state.showForm}
+        />
+        {this.state.showHelp ? (
           <Modal>
             <Help />
           </Modal>
         ) : null}
-        <MainPage />
+        {this.state.showForm ? (
+          <Modal>
+            <Contact onClose={this.onContactClick} />
+          </Modal>
+        ) : null}
+        <MainPage onFormClick={this.onContactClick} />
       </Main>
     );
   }

@@ -79,8 +79,8 @@ class MainPage extends React.Component {
 
   componentDidMount() {
     window.addEventListener("mousewheel", this.updateScroll);
-    window.addEventListener("touchstart", this.touchStarted);
-    window.addEventListener("touchmove", this.updateScrollOnTouch);
+    // window.addEventListener("touchstart", this.touchStarted);
+    // window.addEventListener("touchmove", this.updateScrollOnTouch);
     window.addEventListener("DOMMouseWheel", this.updateScroll);
 
     this.updateWindowDimensions();
@@ -89,8 +89,8 @@ class MainPage extends React.Component {
 
   componentWillUnmount() {
     window.removeEventListener("mousewheel", this.updateScroll);
-    window.removeEventListener("touchstart", this.touchStarted);
-    window.removeEventListener("touchmove", this.updateScrollOnTouch);
+    // window.removeEventListener("touchstart", this.touchStarted);
+    // window.removeEventListener("touchmove", this.updateScrollOnTouch);
     window.removeEventListener("DOMMouseWheel", this.updateScroll);
 
     window.removeEventListener("resize", this.updateWindowDimensions);
@@ -142,13 +142,19 @@ class MainPage extends React.Component {
   };
 
   touchStarted = event => {
-    let touch = event.touches[0];
+    let e = event.originalEvent || event;
+    var touch = e.touches[0] || e.changedTouches[0];
+    // let touch = event.touches[0];
     this.startPageX = touch.pageX;
   };
 
   updateScrollOnTouch = event => {
+    console.log("touch");
+
+    let e = event.originalEvent || event;
+    var touch = e.touches[0] || e.changedTouches[0];
     let eventTimestamp = event.timeStamp;
-    let touch = event.touches[0];
+    // let touch = event.touches[0];
     let pageX = touch.pageX;
     let page = this.state.page;
 
@@ -225,6 +231,8 @@ class MainPage extends React.Component {
           offsetY={this.state.offsetY}
           innerRef={node => (this.container = node)}
           onScroll={this.onContainerScroll}
+          onTouchStart={this.touchStarted}
+          onTouchMove={this.updateScrollOnTouch}
         >
           <Block name="whoweare">
             <Page>
@@ -244,6 +252,7 @@ class MainPage extends React.Component {
                   aboutSign={block.aboutSign}
                   about={block.about}
                   website={block.website}
+                  onFormClick={this.props.onFormClick}
                 />
               </Page>
             </Block>

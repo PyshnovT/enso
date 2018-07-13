@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 
 import { H2 } from "../../utils";
 import { MainButton } from "../../ui/mainButton";
+import { PropTypes } from "prop-types";
 
 const Container = styled.div`
   position: relative;
@@ -242,7 +243,7 @@ let questions = [
   "Какой измеримый результат вы хотите получить через месяц?"
 ];
 
-export default class Questions extends React.Component {
+class Questions extends React.Component {
   state = {
     index: 0,
     answers: [],
@@ -251,6 +252,7 @@ export default class Questions extends React.Component {
 
   sendForm = () => {
     console.log(this.state.answers);
+    this.props.onAnswer();
   };
 
   onSkipClick = () => {
@@ -341,8 +343,8 @@ export default class Questions extends React.Component {
               </div>
               <div className="col-xs-12 col-lg-4">
                 <NextButton type="button" onClick={this.onNextClick}>
-                  {!last ? "Следующий" : "Отправить"}
-                  {!last ? <Arrow /> : null}
+                  Следующий
+                  <Arrow />
                 </NextButton>
               </div>
               <div className="col-xs-12">
@@ -361,3 +363,9 @@ export default class Questions extends React.Component {
     );
   }
 }
+
+Questions.propTypes = {
+  onAnswer: PropTypes.func.isRequired
+};
+
+export default Questions;
